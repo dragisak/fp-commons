@@ -1,10 +1,10 @@
 package fpcommons
 
-sealed trait Tree[A]
+sealed trait Tree[+A]
 
 object Tree {
 
-  trait Node[A] extends Tree {
+  trait Node[A] extends Tree[A] {
 
     def value :A
 
@@ -13,15 +13,16 @@ object Tree {
     def right: Tree[A]
   }
 
-  case object Empty extends Tree
+  trait Empty[A] extends Tree[A] {}
 
+  def empty[A] :Empty[A] = new Empty[A] {}
 
   def apply[A](a : => A) :Node[A] = new Node[A] {
     override lazy val value :A = a
 
-    override val left = Empty
+    override val left = empty
 
-    override val right = Empty
+    override val right = empty
   }
 
   def apply[A](a : => A, l : => Tree[A], r : => Tree[A]) :Node[A] = new Node[A] {
